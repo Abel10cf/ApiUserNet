@@ -8,6 +8,6 @@ namespace Capgemini.Indentity.Application.Responses
 {
     public class LoginResponseError : LoginResponse
     {
-        public string ErrorType { get; set; }    
+        public string ErrorType { get; init; }    
     }
 }

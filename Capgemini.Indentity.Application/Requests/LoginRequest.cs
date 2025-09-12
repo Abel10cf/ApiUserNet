@@ -9,14 +9,8 @@ namespace Capgemini.Indentity.Application.Requests
     public class LoginRequest
     {
 
-        public string Email {  get; set; }
-        public string Password { get; set; }
-
-        /*public string Password
-        {
-            set { password = value; }
-        }*/
-      
+        public string Email {  get; init; }
+        public string Password { get; init; }    
 
     }
 }

@@ -8,8 +8,8 @@ namespace Capgemini.Indentity.Application.Responses
 {
     public class LoginResponse
     {
-        public string MessageLogin { get; set; }
+        public string MessageLogin { get; init; }
         
-        public int HttpStatus { get; set;}
+        public int HttpStatus { get; init;}
     }
 }

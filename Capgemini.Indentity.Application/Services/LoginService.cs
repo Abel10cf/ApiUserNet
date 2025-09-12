@@ -1,4 +1,5 @@
 ﻿using Capgemini.Indentity.Application.Abstractions;
+using Capgemini.Indentity.Application.Exceptions;
 using Capgemini.Indentity.Application.Requests;
 using Capgemini.Indentity.Application.Responses;
 
@@ -8,35 +9,31 @@ namespace Capgemini.Indentity.Application.Services
     {
 
 
+        private const string CorrectEmail = "abelcf123@gmail.com";
+        private const string CorrectPassword = "abejita123_";
+
         public Task<LoginResponse> Login(LoginRequest login)
         {
-            //LoginResponseSuccess respuesta = new LoginResponseSuccess();
-
-
-            if (login.Email == "abelcf123@gmail.com" && login.Password == "abejita123_")
+            // Validación de nulos o vacíos
+            if (string.IsNullOrWhiteSpace(login.Email) || string.IsNullOrWhiteSpace(login.Password))
             {
-                return Task.FromResult<LoginResponse>(new LoginResponseSuccess
-            {
-                MessageLogin = "Bienvenido",
-                HttpStatus = 200,
-                Token = "#$%#Fff"
-            });
-                  
-            }
-            else
-            {
-                return Task.FromResult<LoginResponse>(
-            new LoginResponseError
-            {
-                MessageLogin = "Usuario o contraseña incorrecto",
-                HttpStatus = 400,
-                ErrorType = "NotFound"
-            });
+                throw new NullCredentialException("Email o contraseña no pueden estar vacíos");
             }
 
-             
+            // Validación de credenciales
+            if (login.Email != CorrectEmail || login.Password != CorrectPassword)
+            {
+                throw new InvalidCredentialException("Usuario o contraseña incorrectos");
+            }
 
-            //  return Task.FromResult(respuesta);
+            // Login correcto
+            return Task.FromResult<LoginResponse>(
+                new LoginResponseSuccess
+                {
+                    MessageLogin = "Login correcto",
+                    HttpStatus = 200,
+                    Token = "#$%#Fff" // Aquí luego iría tu JWT
+                });
         }
     }
 }

@@ -8,6 +8,6 @@ namespace Capgemini.Indentity.Application.Responses
 {
     public class LoginResponseSuccess : LoginResponse
     {
-        public string Token {  get; set; }
+        public string Token {  get; init; }
     }
 }

@@ -1,7 +1,7 @@
 using Capgemini.Indentity.Application.Abstractions;
-using Capgemini.Indentity.Application.Requests;
-using Capgemini.Indentity.Application.Responses;
 using Capgemini.Indentity.Application.Services;
+using Capgemini.identity.WebAPI.Modules;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,10 +9,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
+//Aquí se hace la inyección de dependencias para registrar que implementación se dará cuando
+//se pida un ILoginService
 builder.Services.AddScoped<ILoginService, LoginService>();
 
 var app = builder.Build();
+
+
 
 // Activar Swagger solo en desarrollo
 if (app.Environment.IsDevelopment())
@@ -20,18 +23,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+//Es el body de la peticion
 
-app.MapPost("/login", async (LoginRequest request, ILoginService service) =>
-{
-    LoginResponse response = await service.Login(request);
-
-    return response.HttpStatus switch
-    {
-        200 => Results.Ok(response),
-        400 => Results.BadRequest(response),
-        500 => Results.Json(response, statusCode: 500),
-        _ => Results.BadRequest(response)
-    };
-});
+app.AddLoginEndpoints();
 
 app.Run();
