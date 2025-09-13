@@ -2,8 +2,6 @@
 using Capgemini.Indentity.Application.Exceptions;
 using Capgemini.Indentity.Application.Requests;
 using Capgemini.Indentity.Application.Responses;
-using Capgemini.Indentity.Application.Services;
-
 
 
 namespace Capgemini.identity.WebAPI.Modules
@@ -17,9 +15,10 @@ namespace Capgemini.identity.WebAPI.Modules
             {
                 try
                 {
-                    var response = await service.Login(request);
+                    LoginResponse response = await service.Login(request);
                     return Results.Ok(response);
                 }
+                //Aquí se maneja la excepción cuando las credenciales van vacías
                 catch (NullCredentialException ex)
                 {
                     return Results.BadRequest(new LoginResponseError
@@ -29,6 +28,7 @@ namespace Capgemini.identity.WebAPI.Modules
                         ErrorType = "NullCredential"
                     });
                 }
+                //Aquí se maneja la excepción cuando las credenciales son incorrectas
                 catch (InvalidCredentialException ex)
                 {
                     return Results.BadRequest(new LoginResponseError
