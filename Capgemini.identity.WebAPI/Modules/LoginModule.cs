@@ -38,6 +38,16 @@ namespace Capgemini.identity.WebAPI.Modules
                         ErrorType = "InvalidCredential"
                     });
                 }
+                // Aquí se maneja la excepción cuando el usuario esta inactivo
+                catch (InactiveUserException ex)
+                {
+                    return Results.BadRequest(new LoginResponseError
+                    {
+                        MessageLogin = ex.Message,
+                        HttpStatus = 403,
+                        ErrorType = "InactiveUser"
+                    });
+                }
                 catch (Exception ex)
                 {
                     return Results.Json(new LoginResponseError

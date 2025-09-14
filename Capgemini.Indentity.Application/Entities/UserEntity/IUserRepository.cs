@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Capgemini.Indentity.Application.Entities.UserEntity
 {
-    internal interface IUserRepository
+    public interface IUserRepository
     {
+        User GetUserByCredentials(string username, string password);
     }
 }

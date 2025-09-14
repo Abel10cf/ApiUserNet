@@ -12,13 +12,13 @@ namespace Capgemini.Indentity.Application.Infrastructure
 {
     public class JwtService 
     {
-        private readonly string _key;
-        private readonly string _issuer;
+        private readonly string key;
+        private readonly string issuer;
 
         public JwtService(string key, string issuer)
         {
-            _key = key;
-            _issuer = issuer;
+            this.key = key;
+            this.issuer = issuer;
         }
 
         public string GenerateToken(string email)
@@ -29,12 +29,12 @@ namespace Capgemini.Indentity.Application.Infrastructure
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_key));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.key));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: _issuer,
-                audience: _issuer,
+                issuer: issuer,
+                audience: issuer,
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(1),
                 signingCredentials: creds

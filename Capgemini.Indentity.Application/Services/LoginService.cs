@@ -1,4 +1,5 @@
 ﻿using Capgemini.Indentity.Application.Abstractions;
+using Capgemini.Indentity.Application.Entities.UserEntity;
 using Capgemini.Indentity.Application.Exceptions;
 using Capgemini.Indentity.Application.Infrastructure;
 using Capgemini.Indentity.Application.Requests;
@@ -9,18 +10,19 @@ namespace Capgemini.Indentity.Application.Services
     public class LoginService : ILoginService
     {
 
+        // Campos de la clase JwtService y IUserRepository
+        private readonly JwtService jwtService;
+        private readonly IUserRepository userRepository;
 
-        private const string CorrectEmail = "abelcf123@gmail.com";
-        private const string CorrectPassword = "abejita123_";
 
-        private readonly JwtService _jwtService;
-
-        // Inyección de JwtService vía constructor
-        public LoginService(JwtService jwtService)
+        //Inyección de jwt y repository via constructor
+        public LoginService(IUserRepository userRepository, JwtService jwtService)
         {
-            _jwtService = jwtService;
+            this.userRepository = userRepository;
+            this.jwtService = jwtService;
         }
 
+        //Inicio del método
         public Task<LoginResponse> Login(LoginRequest login)
         {
             // Validación de nulos o vacíos
@@ -29,14 +31,25 @@ namespace Capgemini.Indentity.Application.Services
                 throw new NullCredentialException("Email o contraseña no pueden estar vacíos");
             }
 
-            // Validación de credenciales
-            if (login.Email != CorrectEmail || login.Password != CorrectPassword)
+
+            // Buscar usuario en el repositorio
+            User? user = userRepository.GetUserByCredentials(login.Email, login.Password);
+
+            // Validación de usuario y contraseña
+            if (user == null)
             {
                 throw new InvalidCredentialException("Usuario o contraseña incorrectos");
             }
 
+            // Validación si usuario está activo
+            if (!user.Active)
+            {
+                throw new InactiveUserException("El usuario existe pero está inactivo");
+            }
+       
+
             // Generar JWT
-            var token = _jwtService.GenerateToken(login.Email);
+            var token = jwtService.GenerateToken(login.Email);
 
             // Login correcto
             return Task.FromResult<LoginResponse>(

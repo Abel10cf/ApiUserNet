@@ -1,14 +1,21 @@
 using Capgemini.identity.WebAPI.Modules;
 using Capgemini.Indentity.Application.Abstractions;
+using Capgemini.Indentity.Application.Entities.UserEntity;
 using Capgemini.Indentity.Application.Infrastructure;
 using Capgemini.Indentity.Application.Services;
 
 
+
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 // Agregar el servicio de Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//Registro de repositorio
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 
 //Registro de jwt
@@ -17,9 +24,13 @@ builder.Services.AddSingleton(new JwtService(
     issuer: "CapgeminiIdentityAPI"
 ));
 
+
+
 //Aquí se hace la inyección de dependencias para registrar que implementación se dará cuando
 //se pida un ILoginService
 builder.Services.AddScoped<ILoginService, LoginService>();
+
+
 
 var app = builder.Build();
 
